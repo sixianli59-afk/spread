@@ -16,6 +16,7 @@ const toast = document.getElementById("toast");
 
 const ANALYZE_HISTORY_KEY = "spread_analyze_history";
 const MARKET_CONTEXT_KEY = "spread_market_context";
+const API_BASE = "https://spread-api-5wyc.onrender.com";
 
 function showToast(message) {
   toast.textContent = message;
@@ -40,9 +41,15 @@ function renderAnalyzeHistory() {
   const items = getAnalyzeHistory();
 
   if (!items.length) {
-    analyzeHistoryList.innerHTML = `<p class="empty-history">还没有分析记录</p>`;
+    analyzeHistoryList.innerHTML = `<p class="empty-history">${t("emptyAnalyzeHistory")}</p>`;
     return;
   }
+
+  const scoreLabel = getLanguage() === "en" ? "Market fit score:" : "市场匹配度：";
+  const adviceLabel = getLanguage() === "en" ? "Entry advice:" : "进入建议：";
+  const copyDirectionLabel = getLanguage() === "en" ? "Recommended copy direction:" : "推荐文案方向：";
+  const likesLabel = getLanguage() === "en" ? "What this market tends to like:" : "喜欢什么：";
+  const dislikesLabel = getLanguage() === "en" ? "What this market tends to dislike:" : "不喜欢什么：";
 
   analyzeHistoryList.innerHTML = items
     .map((item) => {
@@ -50,14 +57,14 @@ function renderAnalyzeHistory() {
         <div class="analyze-history-item">
           <h3>${item.productName}</h3>
           <p class="analyze-history-meta">${item.country} · ${item.category} · ${item.priceRange} · ${item.time}</p>
-          <p><strong>市场匹配度：</strong>${item.score}</p>
-          <p><strong>进入建议：</strong>${item.advice}</p>
-          <p><strong>推荐文案方向：</strong>${item.copyDirection}</p>
-          <p><strong>喜欢什么：</strong></p>
+          <p><strong>${scoreLabel}</strong>${item.score}</p>
+          <p><strong>${adviceLabel}</strong>${item.advice}</p>
+          <p><strong>${copyDirectionLabel}</strong>${item.copyDirection}</p>
+          <p><strong>${likesLabel}</strong></p>
           <ul>
             ${item.likes.map((like) => `<li>${like}</li>`).join("")}
           </ul>
-          <p><strong>不喜欢什么：</strong></p>
+          <p><strong>${dislikesLabel}</strong></p>
           <ul>
             ${item.dislikes.map((dislike) => `<li>${dislike}</li>`).join("")}
           </ul>
@@ -94,7 +101,7 @@ function getListArray(listEl) {
 
 function copyText(text) {
   navigator.clipboard.writeText(text).then(() => {
-    showToast("复制成功");
+    showToast(t("toastCopied"));
   });
 }
 
@@ -120,12 +127,40 @@ function saveMarketContext() {
   localStorage.setItem(MARKET_CONTEXT_KEY, JSON.stringify(context));
 }
 
+function setIdleAnalyzeButtonText() {
+  analyzeBtn.textContent = t("btnAnalyze");
+}
+
+function setLoadingAnalyzeText() {
+  loadingText.textContent = t("loadingAnalyze");
+}
+
+function setDefaultAnalyzeErrorText() {
+  errorText.textContent = getLanguage() === "en"
+    ? "Analysis failed. Please try again."
+    : "分析失败，请重新尝试";
+}
+
+window.refreshDynamicLanguage = function () {
+  renderAnalyzeHistory();
+  setLoadingAnalyzeText();
+  setDefaultAnalyzeErrorText();
+
+  if (!analyzeBtn.disabled) {
+    setIdleAnalyzeButtonText();
+  }
+
+  if (toast.textContent === "复制成功" || toast.textContent === "Copied") {
+    toast.textContent = t("toastCopied");
+  }
+};
+
 analyzeBtn.addEventListener("click", async () => {
   errorText.classList.add("hidden");
   loadingText.classList.remove("hidden");
 
   analyzeBtn.disabled = true;
-  analyzeBtn.textContent = "分析中...";
+  analyzeBtn.textContent = t("loadingAnalyze");
 
   const productName = document.getElementById("productName").value.trim();
   const category = document.getElementById("category").value.trim();
@@ -134,15 +169,18 @@ analyzeBtn.addEventListener("click", async () => {
 
   if (!productName || !category || !priceRange || !country) {
     loadingText.classList.add("hidden");
-    errorText.textContent = "请先把所有内容填写完整";
+    errorText.textContent =
+      getLanguage() === "en"
+        ? "Please complete all fields first"
+        : "请先把所有内容填写完整";
     errorText.classList.remove("hidden");
     analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "开始分析";
+    setIdleAnalyzeButtonText();
     return;
   }
 
   try {
-    const res = await fetch("https://spread-api-5wyc.onrender.com/analyze", {
+    const res = await fetch(`${API_BASE}/analyze`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -158,7 +196,12 @@ analyzeBtn.addEventListener("click", async () => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || "分析失败，请重新尝试");
+      throw new Error(
+        data.error ||
+          (getLanguage() === "en"
+            ? "Analysis failed. Please try again."
+            : "分析失败，请重新尝试")
+      );
     }
 
     likesResult.innerHTML = "";
@@ -192,12 +235,16 @@ analyzeBtn.addEventListener("click", async () => {
       time: new Date().toLocaleString(),
     });
   } catch (error) {
-    errorText.textContent = error.message || "分析失败，请重新尝试";
+    errorText.textContent =
+      error.message ||
+      (getLanguage() === "en"
+        ? "Analysis failed. Please try again."
+        : "分析失败，请重新尝试");
     errorText.classList.remove("hidden");
   } finally {
     loadingText.classList.add("hidden");
     analyzeBtn.disabled = false;
-    analyzeBtn.textContent = "开始分析";
+    setIdleAnalyzeButtonText();
   }
 });
 
@@ -219,20 +266,26 @@ document.querySelectorAll(".copy-btn").forEach((btn) => {
 });
 
 copyAnalyzeAllBtn.addEventListener("click", () => {
+  const likesLabel = getLanguage() === "en" ? "Likes:" : "喜欢什么:";
+  const dislikesLabel = getLanguage() === "en" ? "Dislikes:" : "不喜欢什么:";
+  const scoreLabel = getLanguage() === "en" ? "Market fit score:" : "市场匹配度:";
+  const adviceLabel = getLanguage() === "en" ? "Entry advice:" : "进入建议:";
+  const copyDirectionLabel = getLanguage() === "en" ? "Recommended copy direction:" : "推荐文案方向:";
+
   const allText = `
-喜欢什么:
+${likesLabel}
 ${getListText(likesResult)}
 
-不喜欢什么:
+${dislikesLabel}
 ${getListText(dislikesResult)}
 
-市场匹配度:
+${scoreLabel}
 ${scoreResult.textContent}
 
-进入建议:
+${adviceLabel}
 ${adviceResult.textContent}
 
-推荐文案方向:
+${copyDirectionLabel}
 ${copyDirectionResult.textContent}
   `.trim();
 
@@ -241,7 +294,7 @@ ${copyDirectionResult.textContent}
 
 clearAnalyzeHistoryBtn.addEventListener("click", () => {
   clearAnalyzeHistory();
-  showToast("分析历史已清空");
+  showToast(t("toastAnalyzeCleared"));
 });
 
 goToGenerateBtn.addEventListener("click", () => {
@@ -252,7 +305,11 @@ goToGenerateBtn.addEventListener("click", () => {
     scoreResult.textContent.trim() !== "...";
 
   if (!hasResult) {
-    showToast("请先完成一次分析");
+    showToast(
+      getLanguage() === "en"
+        ? "Please complete an analysis first"
+        : "请先完成一次分析"
+    );
     return;
   }
 
@@ -261,3 +318,5 @@ goToGenerateBtn.addEventListener("click", () => {
 });
 
 renderAnalyzeHistory();
+setLoadingAnalyzeText();
+setDefaultAnalyzeErrorText();

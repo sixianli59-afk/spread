@@ -67,6 +67,7 @@ const translations = {
     copyAdvice: "复制进入建议",
     copyDirection: "复制文案方向",
     copyAnalyzeAll: "复制全部分析结果",
+    goToGenerate: "用这个分析结果去生成文案",
     analyzeHistoryTitle: "最近分析记录",
     clearAnalyzeHistory: "清空历史记录",
     emptyAnalyzeHistory: "还没有分析记录",
@@ -77,6 +78,7 @@ const translations = {
     placeholderFeature3: "例如：适合旅行和办公室",
     placeholderCategory: "例如：Kitchen Appliances",
 
+    countryEmpty: "请选择国家",
     countryUS: "美国",
     countryUK: "英国",
     countryCA: "加拿大",
@@ -160,6 +162,7 @@ const translations = {
     copyAdvice: "Copy advice",
     copyDirection: "Copy copy direction",
     copyAnalyzeAll: "Copy full analysis",
+    goToGenerate: "Generate copy from this analysis",
     analyzeHistoryTitle: "Recent analysis history",
     clearAnalyzeHistory: "Clear history",
     emptyAnalyzeHistory: "No analysis history yet",
@@ -170,6 +173,7 @@ const translations = {
     placeholderFeature3: "e.g. Great for travel and office use",
     placeholderCategory: "e.g. Kitchen Appliances",
 
+    countryEmpty: "Select a country",
     countryUS: "United States",
     countryUK: "United Kingdom",
     countryCA: "Canada",
