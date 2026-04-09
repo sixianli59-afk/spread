@@ -6,8 +6,8 @@ const client = new OpenAI({
   baseURL: "https://api.deepseek.com",
 });
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1分钟
-const RATE_LIMIT_MAX = 10; // 每个IP每分钟最多10次
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 10;
 const rateLimitStore = new Map();
 
 function sendJson(res, statusCode, data) {
@@ -57,7 +57,6 @@ function getClientIp(req) {
   if (typeof forwarded === "string" && forwarded.trim()) {
     return forwarded.split(",")[0].trim();
   }
-
   return req.socket.remoteAddress || "unknown";
 }
 
@@ -100,6 +99,34 @@ function cleanupRateLimitStore() {
   }
 }
 
+function buildMarketContextPrompt(marketContext) {
+  if (!marketContext || typeof marketContext !== "object") {
+    return "";
+  }
+
+  const likes = Array.isArray(marketContext.likes) ? marketContext.likes.join("; ") : "";
+  const dislikes = Array.isArray(marketContext.dislikes) ? marketContext.dislikes.join("; ") : "";
+  const score = marketContext.score || "";
+  const advice = marketContext.advice || "";
+  const copyDirection = marketContext.copyDirection || "";
+
+  if (!likes && !dislikes && !score && !advice && !copyDirection) {
+    return "";
+  }
+
+  return `
+Additional market analysis context:
+- Market fit score: ${score}
+- What this market tends to like: ${likes}
+- What this market tends to dislike: ${dislikes}
+- Entry advice: ${advice}
+- Recommended copy direction: ${copyDirection}
+
+Use this context to make the copy more aligned with the target market.
+Do not mention the analysis directly in the output.
+  `.trim();
+}
+
 const server = http.createServer(async (req, res) => {
   cleanupRateLimitStore();
 
@@ -127,10 +154,13 @@ const server = http.createServer(async (req, res) => {
       const feature2 = (data.feature2 || "").trim();
       const feature3 = (data.feature3 || "").trim();
       const country = (data.country || "").trim();
+      const marketContext = data.marketContext || null;
 
       if (!productName || !feature1 || !feature2 || !feature3 || !country) {
         return sendJson(res, 400, { error: "请先把所有内容填写完整" });
       }
+
+      const marketContextPrompt = buildMarketContextPrompt(marketContext);
 
       const parsed = await createJsonCompletion([
         {
@@ -154,6 +184,8 @@ Selling points:
 2. ${feature2}
 3. ${feature3}
 
+${marketContextPrompt}
+
 Return json in exactly this shape:
 {
   "title": "string",
@@ -166,6 +198,7 @@ Rules:
 - Title should be concise and marketable
 - Bullets must be 3 short selling points
 - Description should be 1 short paragraph
+- Align the copy with the target market when market context is available
 - Do not include markdown
 - Do not include any text outside json
           `.trim(),

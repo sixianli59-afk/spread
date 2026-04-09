@@ -10,10 +10,12 @@ const copyDirectionResult = document.getElementById("copyDirectionResult");
 
 const copyAnalyzeAllBtn = document.getElementById("copyAnalyzeAllBtn");
 const clearAnalyzeHistoryBtn = document.getElementById("clearAnalyzeHistoryBtn");
+const goToGenerateBtn = document.getElementById("goToGenerateBtn");
 const analyzeHistoryList = document.getElementById("analyzeHistoryList");
 const toast = document.getElementById("toast");
 
 const ANALYZE_HISTORY_KEY = "spread_analyze_history";
+const MARKET_CONTEXT_KEY = "spread_market_context";
 
 function showToast(message) {
   toast.textContent = message;
@@ -84,10 +86,38 @@ function getListText(listEl) {
     .join("\n");
 }
 
+function getListArray(listEl) {
+  return Array.from(listEl.querySelectorAll("li"))
+    .map((li) => li.textContent.trim())
+    .filter(Boolean);
+}
+
 function copyText(text) {
   navigator.clipboard.writeText(text).then(() => {
     showToast("复制成功");
   });
+}
+
+function saveMarketContext() {
+  const productName = document.getElementById("productName").value.trim();
+  const category = document.getElementById("category").value.trim();
+  const priceRange = document.getElementById("priceRange").value;
+  const country = document.getElementById("country").value;
+
+  const context = {
+    productName,
+    category,
+    priceRange,
+    country,
+    likes: getListArray(likesResult),
+    dislikes: getListArray(dislikesResult),
+    score: scoreResult.textContent.trim(),
+    advice: adviceResult.textContent.trim(),
+    copyDirection: copyDirectionResult.textContent.trim(),
+    savedAt: new Date().toISOString(),
+  };
+
+  localStorage.setItem(MARKET_CONTEXT_KEY, JSON.stringify(context));
 }
 
 analyzeBtn.addEventListener("click", async () => {
@@ -112,7 +142,7 @@ analyzeBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("https://spread-api-5wyc.onrender.com/analyze", {
+    const res = await fetch("http://localhost:3000/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -212,6 +242,22 @@ ${copyDirectionResult.textContent}
 clearAnalyzeHistoryBtn.addEventListener("click", () => {
   clearAnalyzeHistory();
   showToast("分析历史已清空");
+});
+
+goToGenerateBtn.addEventListener("click", () => {
+  const hasResult =
+    adviceResult.textContent.trim() &&
+    copyDirectionResult.textContent.trim() &&
+    scoreResult.textContent.trim() &&
+    scoreResult.textContent.trim() !== "...";
+
+  if (!hasResult) {
+    showToast("请先完成一次分析");
+    return;
+  }
+
+  saveMarketContext();
+  window.location.href = "generate.html";
 });
 
 renderAnalyzeHistory();

@@ -7,11 +7,18 @@ const bulletsResult = document.getElementById("bulletsResult");
 const descResult = document.getElementById("descResult");
 
 const copyAllBtn = document.getElementById("copyAllBtn");
-const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 const historyList = document.getElementById("historyList");
 const toast = document.getElementById("toast");
 
+const marketContextCard = document.getElementById("marketContextCard");
+const contextProductName = document.getElementById("contextProductName");
+const contextCountry = document.getElementById("contextCountry");
+const contextAdvice = document.getElementById("contextAdvice");
+const contextCopyDirection = document.getElementById("contextCopyDirection");
+
 const HISTORY_KEY = "spread_history";
+const MARKET_CONTEXT_KEY = "spread_market_context";
+const API_BASE = "https://spread-api-5wyc.onrender.com";
 
 function showToast(message) {
   toast.textContent = message;
@@ -82,6 +89,37 @@ function copyText(text) {
   });
 }
 
+function loadMarketContext() {
+  const saved = localStorage.getItem(MARKET_CONTEXT_KEY);
+  if (!saved) return null;
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return null;
+  }
+}
+
+function renderMarketContext() {
+  const context = loadMarketContext();
+  if (!context) return;
+
+  marketContextCard.classList.remove("hidden");
+
+  contextProductName.textContent = context.productName || "-";
+  contextCountry.textContent = context.country || "-";
+  contextAdvice.textContent = context.advice || "-";
+  contextCopyDirection.textContent = context.copyDirection || "-";
+
+  if (context.productName) {
+    document.getElementById("productName").value = context.productName;
+  }
+
+  if (context.country) {
+    document.getElementById("country").value = context.country;
+  }
+}
+
 generateBtn.addEventListener("click", async () => {
   errorText.classList.add("hidden");
   loadingText.classList.remove("hidden");
@@ -94,6 +132,7 @@ generateBtn.addEventListener("click", async () => {
   const feature2 = document.getElementById("feature2").value.trim();
   const feature3 = document.getElementById("feature3").value.trim();
   const country = document.getElementById("country").value;
+  const marketContext = loadMarketContext();
 
   if (!productName || !feature1 || !feature2 || !feature3) {
     loadingText.classList.add("hidden");
@@ -105,7 +144,7 @@ generateBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("https://spread-api-5wyc.onrender.com/generate", {
+    const res = await fetch(`${API_BASE}/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -116,6 +155,7 @@ generateBtn.addEventListener("click", async () => {
         feature2,
         feature3,
         country,
+        marketContext,
       }),
     });
 
@@ -188,9 +228,10 @@ ${descResult.textContent}
   copyText(allText);
 });
 
-clearHistoryBtn.addEventListener("click", () => {
+document.getElementById("clearHistoryBtn").addEventListener("click", () => {
   clearHistory();
   showToast("历史记录已清空");
 });
 
 renderHistory();
+renderMarketContext();
