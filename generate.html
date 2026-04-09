@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$pread - 商品文案生成</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="hero playful-hero">
+      <div class="brand-logo center">$pread</div>
+      <p class="subtitle">30秒生成适合英语市场的商品文案</p>
+      <p class="desc">
+        输入商品名、3个卖点和目标国家，自动生成英文标题、卖点和短描述
+      </p>
+
+      <div class="page-nav">
+        <a class="nav-link" href="index.html">首页</a>
+        <a class="nav-link active" href="generate.html">商品文案生成</a>
+        <a class="nav-link" href="analyze.html">市场适配分析</a>
+      </div>
+    </header>
+
+    <main class="card">
+      <section class="form-section">
+        <label>商品名</label>
+        <input id="productName" type="text" placeholder="例如：Portable Blender" />
+
+        <label>卖点1</label>
+        <input id="feature1" type="text" placeholder="例如：轻便易携带" />
+
+        <label>卖点2</label>
+        <input id="feature2" type="text" placeholder="例如：USB充电" />
+
+        <label>卖点3</label>
+        <input id="feature3" type="text" placeholder="例如：适合旅行和办公室" />
+
+        <label>目标国家</label>
+        <select id="country">
+          <option>美国</option>
+          <option>英国</option>
+          <option>加拿大</option>
+          <option>澳大利亚</option>
+        </select>
+
+        <button id="generateBtn">立即生成</button>
+
+        <p id="loadingText" class="status hidden">正在生成中...</p>
+        <p id="errorText" class="status error hidden">生成失败，请重新尝试</p>
+      </section>
+
+      <section class="result-section">
+        <h2>生成结果</h2>
+
+        <div class="result-box">
+          <h3>英文标题：</h3>
+          <p id="titleResult">...</p>
+          <button class="copy-btn" data-copy="titleResult">复制标题</button>
+        </div>
+
+        <div class="result-box">
+          <h3>英文卖点：</h3>
+          <ul id="bulletsResult">
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="bulletsResult">复制卖点</button>
+        </div>
+
+        <div class="result-box">
+          <h3>英文短描述：</h3>
+          <p id="descResult">...</p>
+          <button class="copy-btn" data-copy="descResult">复制描述</button>
+        </div>
+
+        <button id="copyAllBtn" class="copy-all-btn">复制全部</button>
+      </section>
+    </main>
+
+    <section class="history-section">
+      <div class="history-header">
+        <h2>最近生成记录</h2>
+        <button id="clearHistoryBtn" class="clear-history-btn">清空历史记录</button>
+      </div>
+
+      <div id="historyList" class="history-list">
+        <p class="empty-history">还没有历史记录</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden">已复制</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

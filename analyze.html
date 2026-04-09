@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>$pread - 市场适配分析</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="hero playful-hero">
+      <div class="brand-logo center">$pread</div>
+      <p class="subtitle">市场适配分析</p>
+      <p class="desc">
+        输入产品信息，分析目标市场更喜欢什么、不喜欢什么，以及你的产品是否适合进入该市场
+      </p>
+
+      <div class="page-nav">
+        <a class="nav-link" href="index.html">首页</a>
+        <a class="nav-link" href="generate.html">商品文案生成</a>
+        <a class="nav-link active" href="analyze.html">市场适配分析</a>
+      </div>
+    </header>
+
+    <main class="card">
+      <section class="form-section">
+        <label>产品名</label>
+        <input id="productName" type="text" placeholder="例如：Portable Blender" />
+
+        <label>产品类目</label>
+        <input id="category" type="text" placeholder="例如：Kitchen Appliances" />
+
+        <label>价格带</label>
+        <select id="priceRange">
+          <option value="">请选择价格带</option>
+          <option>低价（0 - 30 美元）</option>
+          <option>中价（30 - 80 美元）</option>
+          <option>高价（80 美元以上）</option>
+        </select>
+
+        <label>目标国家</label>
+        <select id="country">
+          <option value="">请选择国家</option>
+          <option>美国</option>
+          <option>英国</option>
+          <option>加拿大</option>
+          <option>澳大利亚</option>
+        </select>
+
+        <button id="analyzeBtn">开始分析</button>
+
+        <p id="loadingText" class="status hidden">正在分析中...</p>
+        <p id="errorText" class="status error hidden">分析失败，请重新尝试</p>
+      </section>
+
+      <section class="result-section">
+        <h2>分析结果</h2>
+
+        <div class="result-box">
+          <h3>这个市场更喜欢什么：</h3>
+          <ul id="likesResult">
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="likesResult">复制喜欢什么</button>
+        </div>
+
+        <div class="result-box">
+          <h3>这个市场不喜欢什么：</h3>
+          <ul id="dislikesResult">
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="dislikesResult">复制不喜欢什么</button>
+        </div>
+
+        <div class="result-box">
+          <h3>市场匹配度：</h3>
+          <p id="scoreResult">...</p>
+        </div>
+
+        <div class="result-box">
+          <h3>进入建议：</h3>
+          <p id="adviceResult">...</p>
+          <button class="copy-btn" data-copy="adviceResult">复制进入建议</button>
+        </div>
+
+        <div class="result-box">
+          <h3>推荐文案方向：</h3>
+          <p id="copyDirectionResult">...</p>
+          <button class="copy-btn" data-copy="copyDirectionResult">复制文案方向</button>
+        </div>
+
+        <button id="copyAnalyzeAllBtn" class="copy-all-btn">复制全部分析结果</button>
+      </section>
+    </main>
+
+    <section class="history-section">
+      <div class="history-header">
+        <h2>最近分析记录</h2>
+        <button id="clearAnalyzeHistoryBtn" class="clear-history-btn">清空历史记录</button>
+      </div>
+
+      <div id="analyzeHistoryList" class="history-list">
+        <p class="empty-history">还没有分析记录</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden">已复制</div>
+
+  <script src="analyze.js"></script>
+</body>
+</html>
