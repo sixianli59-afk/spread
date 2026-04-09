@@ -519,3 +519,44 @@ button:disabled {
   margin-bottom: 6px;
   color: var(--text);
 }
+
+.lang-switcher {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.lang-btn {
+  margin-top: 0;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 2px solid #d9eaf8;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.lang-btn:hover {
+  transform: translateY(-1px);
+}
+
+.lang-btn.active {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .lang-switcher {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .lang-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
