@@ -6,6 +6,10 @@ const client = new OpenAI({
   baseURL: "https://api.deepseek.com",
 });
 
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1分钟
+const RATE_LIMIT_MAX = 10; // 每个IP每分钟最多10次
+const rateLimitStore = new Map();
+
 function sendJson(res, statusCode, data) {
   res.writeHead(statusCode, {
     "Content-Type": "application/json; charset=utf-8",
@@ -48,9 +52,69 @@ async function createJsonCompletion(messages) {
   return safeJsonParse(text);
 }
 
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.trim()) {
+    return forwarded.split(",")[0].trim();
+  }
+
+  return req.socket.remoteAddress || "unknown";
+}
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const existing = rateLimitStore.get(ip);
+
+  if (!existing) {
+    rateLimitStore.set(ip, {
+      count: 1,
+      startTime: now,
+    });
+    return false;
+  }
+
+  if (now - existing.startTime > RATE_LIMIT_WINDOW_MS) {
+    rateLimitStore.set(ip, {
+      count: 1,
+      startTime: now,
+    });
+    return false;
+  }
+
+  existing.count += 1;
+
+  if (existing.count > RATE_LIMIT_MAX) {
+    return true;
+  }
+
+  return false;
+}
+
+function cleanupRateLimitStore() {
+  const now = Date.now();
+
+  for (const [ip, data] of rateLimitStore.entries()) {
+    if (now - data.startTime > RATE_LIMIT_WINDOW_MS) {
+      rateLimitStore.delete(ip);
+    }
+  }
+}
+
 const server = http.createServer(async (req, res) => {
+  cleanupRateLimitStore();
+
   if (req.method === "OPTIONS") {
     return sendJson(res, 200, { ok: true });
+  }
+
+  if (req.method === "POST" && (req.url === "/generate" || req.url === "/analyze")) {
+    const ip = getClientIp(req);
+
+    if (isRateLimited(ip)) {
+      return sendJson(res, 429, {
+        error: "请求过于频繁，请稍后再试",
+      });
+    }
   }
 
   if (req.method === "POST" && req.url === "/generate") {
@@ -193,4 +257,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
