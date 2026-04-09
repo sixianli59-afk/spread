@@ -43,9 +43,12 @@ function renderHistory() {
   const items = getHistory();
 
   if (!items.length) {
-    historyList.innerHTML = `<p class="empty-history">还没有历史记录</p>`;
+    historyList.innerHTML = `<p class="empty-history">${t("emptyHistory")}</p>`;
     return;
   }
+
+  const productLabel = getLanguage() === "en" ? "Product name:" : "商品名：";
+  const descLabel = getLanguage() === "en" ? "English short description:" : "英文短描述：";
 
   historyList.innerHTML = items
     .map((item) => {
@@ -53,8 +56,8 @@ function renderHistory() {
         <div class="history-item">
           <h3>${item.title}</h3>
           <p class="history-meta">${item.country} · ${item.time}</p>
-          <p><strong>商品名：</strong>${item.productName}</p>
-          <p><strong>英文短描述：</strong>${item.description}</p>
+          <p><strong>${productLabel}</strong>${item.productName}</p>
+          <p><strong>${descLabel}</strong>${item.description}</p>
           <ul>
             ${item.bullets.map((bullet) => `<li>${bullet}</li>`).join("")}
           </ul>
@@ -85,7 +88,7 @@ function getBulletsText() {
 
 function copyText(text) {
   navigator.clipboard.writeText(text).then(() => {
-    showToast("复制成功");
+    showToast(t("toastCopied"));
   });
 }
 
@@ -120,12 +123,38 @@ function renderMarketContext() {
   }
 }
 
+function setIdleButtonText() {
+  generateBtn.textContent = t("btnGenerate");
+}
+
+function setLoadingText() {
+  loadingText.textContent = t("loadingGenerate");
+}
+
+function setDefaultErrorText() {
+  errorText.textContent = t("errorGeneric");
+}
+
+window.refreshDynamicLanguage = function () {
+  renderHistory();
+  setLoadingText();
+  setDefaultErrorText();
+
+  if (!generateBtn.disabled) {
+    setIdleButtonText();
+  }
+
+  if (toast.textContent === "复制成功" || toast.textContent === "Copied") {
+    toast.textContent = t("toastCopied");
+  }
+};
+
 generateBtn.addEventListener("click", async () => {
   errorText.classList.add("hidden");
   loadingText.classList.remove("hidden");
 
   generateBtn.disabled = true;
-  generateBtn.textContent = "生成中...";
+  generateBtn.textContent = t("loadingGenerate");
 
   const productName = document.getElementById("productName").value.trim();
   const feature1 = document.getElementById("feature1").value.trim();
@@ -136,10 +165,13 @@ generateBtn.addEventListener("click", async () => {
 
   if (!productName || !feature1 || !feature2 || !feature3) {
     loadingText.classList.add("hidden");
-    errorText.textContent = "请先把所有内容填写完整";
+    errorText.textContent =
+      getLanguage() === "en"
+        ? "Please complete all fields first"
+        : "请先把所有内容填写完整";
     errorText.classList.remove("hidden");
     generateBtn.disabled = false;
-    generateBtn.textContent = "立即生成";
+    setIdleButtonText();
     return;
   }
 
@@ -162,7 +194,7 @@ generateBtn.addEventListener("click", async () => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.error || "生成失败，请重新尝试");
+      throw new Error(data.error || t("errorGeneric"));
     }
 
     titleResult.textContent = data.title || "";
@@ -185,12 +217,12 @@ generateBtn.addEventListener("click", async () => {
       time: new Date().toLocaleString(),
     });
   } catch (error) {
-    errorText.textContent = error.message || "生成失败，请重新尝试";
+    errorText.textContent = error.message || t("errorGeneric");
     errorText.classList.remove("hidden");
   } finally {
     loadingText.classList.add("hidden");
     generateBtn.disabled = false;
-    generateBtn.textContent = "立即生成";
+    setIdleButtonText();
   }
 });
 
@@ -214,14 +246,18 @@ document.querySelectorAll(".copy-btn").forEach((btn) => {
 });
 
 copyAllBtn.addEventListener("click", () => {
+  const titleLabel = getLanguage() === "en" ? "Title:" : "标题：";
+  const bulletsLabel = getLanguage() === "en" ? "Bullets:" : "卖点：";
+  const descLabel = getLanguage() === "en" ? "Description:" : "描述：";
+
   const allText = `
-Title:
+${titleLabel}
 ${titleResult.textContent}
 
-Bullets:
+${bulletsLabel}
 ${getBulletsText()}
 
-Description:
+${descLabel}
 ${descResult.textContent}
   `.trim();
 
@@ -230,8 +266,10 @@ ${descResult.textContent}
 
 document.getElementById("clearHistoryBtn").addEventListener("click", () => {
   clearHistory();
-  showToast("历史记录已清空");
+  showToast(t("toastCleared"));
 });
 
 renderHistory();
 renderMarketContext();
+setLoadingText();
+setDefaultErrorText();
