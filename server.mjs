@@ -154,6 +154,7 @@ const server = http.createServer(async (req, res) => {
       const feature2 = (data.feature2 || "").trim();
       const feature3 = (data.feature3 || "").trim();
       const country = (data.country || "").trim();
+      const uiLanguage = data.uiLanguage === "en" ? "en" : "zh";
       const marketContext = data.marketContext || null;
 
       if (!productName || !feature1 || !feature2 || !feature3 || !country) {
@@ -223,6 +224,7 @@ Rules:
       const category = (data.category || "").trim();
       const priceRange = (data.priceRange || "").trim();
       const country = (data.country || "").trim();
+      const uiLanguage = data.uiLanguage === "en" ? "en" : "zh";
 
       if (!productName || !category || !priceRange || !country) {
         return sendJson(res, 400, { error: "请先把所有内容填写完整" });
@@ -261,11 +263,12 @@ Return json in exactly this shape:
 }
 
 Rules:
-- likes must be 3 short bullet points about what this market tends to value
-- dislikes must be 3 short bullet points about what this market may reject
+- likes must be 3 short bullet points in ${uiLanguage === "en" ? "English" : "Chinese"} about what this market tends to value
+- dislikes must be 3 short bullet points in ${uiLanguage === "en" ? "English" : "Chinese"} about what this market may reject
 - score should look like "78 / 100"
-- advice should be one short paragraph in Chinese
-- copyDirection should be one short paragraph in Chinese
+- advice should be one short paragraph in ${uiLanguage === "en" ? "English" : "Chinese"}
+- copyDirection should be one short paragraph in ${uiLanguage === "en" ? "English" : "Chinese"}
+- All fields except score must be in ${uiLanguage === "en" ? "English" : "Chinese"}
 - Keep the analysis practical for an independent e-commerce seller
 - Do not include markdown
 - Do not include any text outside json

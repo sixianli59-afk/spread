@@ -190,6 +190,7 @@ analyzeBtn.addEventListener("click", async () => {
         category,
         priceRange,
         country,
+        uiLanguage: getLanguage(),
       }),
     });
 
