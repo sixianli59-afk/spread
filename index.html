@@ -6,69 +6,54 @@
   <title>$pread</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="container">
-    <header class="landing-hero">
-      <div class="landing-nav">
-        <div class="brand-logo" data-i18n="brand">$pread</div>
+<body class="home-search-page">
+  <div class="container search-home">
+    <header class="search-topbar">
+      <a class="mini-brand" href="index.html" aria-label="$pread home">
+        <span class="logo-dollar mini">$</span>
+        <span class="logo-word mini" data-i18n="brand">pread</span>
+      </a>
 
-        <div class="lang-switcher">
-          <button type="button" class="lang-btn" data-lang-btn="zh">中文</button>
-          <button type="button" class="lang-btn" data-lang-btn="en">EN</button>
-        </div>
-      </div>
-
-      <div class="landing-main">
-        <p class="landing-tag" data-i18n="landingTag">为跨境电商卖家打造</p>
-        <h1 data-i18n="landingTitle">让商品文案生成与市场判断<br />更轻松、更直观、更贴近目标国家</h1>
-        <p class="landing-desc" data-i18n="landingDesc">
-          $pread 帮跨境卖家更快完成商品文案生成、市场适配分析与进入建议判断，用更轻松的方式做更清楚的决策。
-        </p>
+      <div class="lang-switcher">
+        <button type="button" class="lang-btn" data-lang-btn="zh">中文</button>
+        <button type="button" class="lang-btn" data-lang-btn="en">EN</button>
       </div>
     </header>
 
-    <section class="landing-section">
-      <h2 data-i18n="landingWhatTitle">你可以用它做什么</h2>
+    <main class="search-hero-shell">
+      <div class="search-badge" data-i18n="landingTag">为跨境电商卖家打造</div>
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <h3 data-i18n="featureGenerateTitle">商品文案生成</h3>
-          <p data-i18n="featureGenerateDesc">
-            输入商品名、卖点和目标国家，快速生成适合英语市场的标题、卖点和短描述，帮你更快完成上架准备。
-          </p>
-          <a class="text-link" href="generate.html" data-i18n="enterFeature">进入功能页 →</a>
+      <div class="search-logo-lockup">
+        <span class="logo-dollar">$</span>
+        <span class="logo-word" data-i18n="brand">pread</span>
+      </div>
+
+      <h1 class="search-headline" data-i18n="landingTitle">
+        让商品文案生成与市场判断<br />更轻松、更直观、更贴近目标国家
+      </h1>
+
+      <p class="search-subline" data-i18n="landingDesc">
+        $pread 帮跨境卖家更快完成商品文案生成、市场适配分析与进入建议判断，用更轻松的方式做更清楚的决策。
+      </p>
+
+      <div class="search-command-box">
+        <div class="search-command-input">
+          <span class="search-command-dot"></span>
+          <span class="search-command-text" data-i18n="landingWhatTitle">你可以用它做什么</span>
         </div>
 
-        <div class="feature-card">
-          <h3 data-i18n="featureAnalyzeTitle">市场适配分析</h3>
-          <p data-i18n="featureAnalyzeDesc">
-            输入产品名、类目、价格带和目标国家，分析这个市场更喜欢什么、不喜欢什么，以及你的产品是否适合进入该市场。
-          </p>
-          <a class="text-link" href="analyze.html" data-i18n="enterFeature">进入功能页 →</a>
+        <div class="search-command-actions">
+          <a class="search-action primary" href="generate.html" data-i18n="navGenerate">商品文案生成</a>
+          <a class="search-action" href="analyze.html" data-i18n="navAnalyze">市场适配分析</a>
         </div>
       </div>
-    </section>
 
-    <section class="landing-section">
-      <h2 data-i18n="landingWhyTitle">为什么适合独立站卖家</h2>
-
-      <div class="benefit-list">
-        <div class="benefit-item">
-          <strong data-i18n="benefit1Title">更快验证产品</strong>
-          <p data-i18n="benefit1Desc">在真正上架前，先快速看文案方向和目标市场匹配度。</p>
-        </div>
-
-        <div class="benefit-item">
-          <strong data-i18n="benefit2Title">减少盲目判断</strong>
-          <p data-i18n="benefit2Desc">不用只靠感觉做决定，让选品和进入建议更有依据。</p>
-        </div>
-
-        <div class="benefit-item">
-          <strong data-i18n="benefit3Title">更贴近目标市场</strong>
-          <p data-i18n="benefit3Desc">让商品表达和市场分析都更接近目标国家用户的偏好。</p>
-        </div>
+      <div class="search-quick-notes">
+        <span class="quick-note" data-i18n="benefit1Title">更快验证产品</span>
+        <span class="quick-note" data-i18n="benefit2Title">减少盲目判断</span>
+        <span class="quick-note" data-i18n="benefit3Title">更贴近目标市场</span>
       </div>
-    </section>
+    </main>
   </div>
 
   <script src="i18n.js"></script>
