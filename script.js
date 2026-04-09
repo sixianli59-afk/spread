@@ -15,10 +15,12 @@ const contextProductName = document.getElementById("contextProductName");
 const contextCountry = document.getElementById("contextCountry");
 const contextAdvice = document.getElementById("contextAdvice");
 const contextCopyDirection = document.getElementById("contextCopyDirection");
+const clearContextBtn = document.getElementById("clearContextBtn");
 
 const HISTORY_KEY = "spread_history";
 const MARKET_CONTEXT_KEY = "spread_market_context";
 const API_BASE = "https://spread-api-5wyc.onrender.com";
+const MARKET_CONTEXT_MAX_AGE_MS = 12 * 60 * 60 * 1000;
 
 function showToast(message) {
   toast.textContent = message;
@@ -103,9 +105,43 @@ function loadMarketContext() {
   }
 }
 
+function hideMarketContext() {
+  marketContextCard.classList.add("hidden");
+  contextProductName.textContent = "-";
+  contextCountry.textContent = "-";
+  contextAdvice.textContent = "-";
+  contextCopyDirection.textContent = "-";
+}
+
+function clearMarketContext() {
+  localStorage.removeItem(MARKET_CONTEXT_KEY);
+  hideMarketContext();
+}
+
+function isMarketContextExpired(context) {
+  if (!context?.savedAt) return false;
+  const ts = new Date(context.savedAt).getTime();
+  if (!Number.isFinite(ts)) return false;
+  return Date.now() - ts > MARKET_CONTEXT_MAX_AGE_MS;
+}
+
 function renderMarketContext() {
   const context = loadMarketContext();
-  if (!context) return;
+
+  if (!context) {
+    hideMarketContext();
+    return;
+  }
+
+  if (isMarketContextExpired(context)) {
+    clearMarketContext();
+    return;
+  }
+
+  if (context.language && context.language !== getLanguage()) {
+    hideMarketContext();
+    return;
+  }
 
   marketContextCard.classList.remove("hidden");
 
@@ -137,6 +173,7 @@ function setDefaultErrorText() {
 
 window.refreshDynamicLanguage = function () {
   renderHistory();
+  renderMarketContext();
   setLoadingText();
   setDefaultErrorText();
 
@@ -267,6 +304,11 @@ ${descResult.textContent}
 document.getElementById("clearHistoryBtn").addEventListener("click", () => {
   clearHistory();
   showToast(t("toastCleared"));
+});
+
+clearContextBtn.addEventListener("click", () => {
+  clearMarketContext();
+  showToast(getLanguage() === "en" ? "Reference cleared" : "参考已清除");
 });
 
 renderHistory();

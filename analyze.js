@@ -121,6 +121,7 @@ function saveMarketContext() {
     score: scoreResult.textContent.trim(),
     advice: adviceResult.textContent.trim(),
     copyDirection: copyDirectionResult.textContent.trim(),
+    language: getLanguage(),
     savedAt: new Date().toISOString(),
   };
 
