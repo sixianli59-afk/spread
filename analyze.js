@@ -112,7 +112,7 @@ analyzeBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("http://localhost:3000/analyze", {
+    const res = await fetch("https://spread-api-5wyc.onrender.com/analyze", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -105,7 +105,7 @@ generateBtn.addEventListener("click", async () => {
   }
 
   try {
-    const res = await fetch("http://localhost:3000/generate", {
+    const res = await fetch("https://spread-api-5wyc.onrender.com/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
