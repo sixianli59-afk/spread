@@ -2058,3 +2058,207 @@ body.mono-site::before,
     width: 100%;
   }
 }
+
+/* ===== Monochrome tool pages ===== */
+.tool-page {
+  background: var(--mono-bg) !important;
+}
+
+.tool-page .container {
+  max-width: 1240px;
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+
+.tool-page .hero {
+  padding: 26px 28px 22px !important;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tool-page .landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.tool-page .brand-logo.center {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(2.1rem, 4vw, 3.2rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.06em !important;
+}
+
+.tool-page .subtitle {
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  margin-bottom: 8px;
+}
+
+.tool-page .desc {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 0.98rem;
+  line-height: 1.8;
+}
+
+.tool-page .page-nav {
+  margin-top: 18px;
+}
+
+.tool-page .card {
+  display: grid;
+  grid-template-columns: minmax(320px, 430px) minmax(420px, 1fr);
+  gap: 22px;
+  align-items: start;
+  padding: 22px !important;
+}
+
+.tool-page .form-section,
+.tool-page .result-section {
+  padding: 0 !important;
+}
+
+.tool-page .form-section {
+  position: sticky;
+  top: 18px;
+}
+
+.tool-page .form-section label {
+  font-size: 0.96rem;
+  letter-spacing: -0.01em;
+}
+
+.tool-page .form-section input,
+.tool-page .form-section select {
+  min-height: 54px;
+  font-size: 0.98rem;
+}
+
+.tool-page .form-section button {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.tool-page .result-section h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+}
+
+.tool-page .result-box {
+  margin-bottom: 14px;
+  padding: 18px 18px 16px !important;
+}
+
+.tool-page .result-box h3 {
+  font-size: 1.02rem;
+  margin-bottom: 10px;
+}
+
+.tool-page .result-box p,
+.tool-page .result-box li {
+  font-size: 0.97rem;
+  line-height: 1.8;
+}
+
+.tool-page .copy-btn,
+.tool-page .copy-all-btn,
+.tool-page .clear-history-btn {
+  min-height: 46px;
+  font-size: 0.94rem;
+}
+
+.tool-page .copy-all-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.tool-page .history-section {
+  margin-top: 20px;
+  padding: 24px !important;
+}
+
+.tool-page .history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tool-page .history-list {
+  display: grid;
+  gap: 14px;
+}
+
+.tool-page .history-item,
+.tool-page .analyze-history-item {
+  padding: 18px !important;
+}
+
+.tool-page .history-item h3,
+.tool-page .analyze-history-item h3 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.tool-page .history-meta,
+.tool-page .analyze-history-meta {
+  margin-bottom: 10px;
+}
+
+.tool-page #marketContextCard .result-box {
+  margin-bottom: 0;
+}
+
+.tool-page .status {
+  margin-top: 10px;
+}
+
+@media (max-width: 960px) {
+  .tool-page .card {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-page .form-section {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .tool-page .container {
+    padding-top: 18px;
+    padding-bottom: 32px;
+  }
+
+  .tool-page .hero {
+    padding: 20px 16px 18px !important;
+  }
+
+  .tool-page .landing-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tool-page .lang-switcher {
+    align-self: flex-end;
+  }
+
+  .tool-page .card,
+  .tool-page .history-section {
+    padding: 16px !important;
+  }
+
+  .tool-page .history-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tool-page .clear-history-btn,
+  .tool-page .copy-all-btn {
+    width: 100%;
+  }
+}
