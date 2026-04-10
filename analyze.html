@@ -65,43 +65,71 @@
         <h2 data-i18n="analyzeResultTitle">分析结果</h2>
 
         <div class="result-box">
-          <h3 data-i18n="likesTitle">这个市场更喜欢什么：</h3>
-          <ul id="likesResult">
+          <h3>市场结论：</h3>
+          <p id="verdictResult">...</p>
+        </div>
+
+        <div class="result-box">
+          <h3>信心等级：</h3>
+          <p id="confidenceResult">...</p>
+        </div>
+
+        <div class="result-box">
+          <h3>判断原因：</h3>
+          <ul id="reasonsResult">
             <li>...</li>
             <li>...</li>
             <li>...</li>
           </ul>
-          <button class="copy-btn" data-copy="likesResult" data-i18n="copyLikes">复制喜欢什么</button>
+          <button class="copy-btn" data-copy="reasonsResult">复制判断原因</button>
         </div>
 
         <div class="result-box">
-          <h3 data-i18n="dislikesTitle">这个市场不喜欢什么：</h3>
-          <ul id="dislikesResult">
+          <h3>目标消费者：</h3>
+          <ul id="customerResult">
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="customerResult">复制目标消费者</button>
+        </div>
+
+        <div class="result-box">
+          <h3>应重点强调的卖点：</h3>
+          <ul id="anglesResult">
             <li>...</li>
             <li>...</li>
             <li>...</li>
           </ul>
-          <button class="copy-btn" data-copy="dislikesResult" data-i18n="copyDislikes">复制不喜欢什么</button>
+          <button class="copy-btn" data-copy="anglesResult">复制重点卖点</button>
         </div>
 
         <div class="result-box">
-          <h3 data-i18n="scoreTitle">市场匹配度：</h3>
-          <p id="scoreResult">...</p>
+          <h3>可能阻碍成交的风险点：</h3>
+          <ul id="risksResult">
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="risksResult">复制风险点</button>
         </div>
 
         <div class="result-box">
-          <h3 data-i18n="adviceTitle">进入建议：</h3>
-          <p id="adviceResult">...</p>
-          <button class="copy-btn" data-copy="adviceResult" data-i18n="copyAdvice">复制进入建议</button>
+          <h3>下一步执行建议：</h3>
+          <ul id="nextStepsResult">
+            <li>...</li>
+            <li>...</li>
+            <li>...</li>
+          </ul>
+          <button class="copy-btn" data-copy="nextStepsResult">复制执行建议</button>
         </div>
 
         <div class="result-box">
-          <h3 data-i18n="copyDirectionTitle">推荐文案方向：</h3>
+          <h3>推荐文案方向：</h3>
           <p id="copyDirectionResult">...</p>
-          <button class="copy-btn" data-copy="copyDirectionResult" data-i18n="copyDirection">复制文案方向</button>
+          <button class="copy-btn" data-copy="copyDirectionResult">复制文案方向</button>
         </div>
 
-        <button id="copyAnalyzeAllBtn" class="copy-all-btn" data-i18n="copyAnalyzeAll">复制全部分析结果</button>
+        <button id="copyAnalyzeAllBtn" class="copy-all-btn">复制全部分析结果</button>
         <button id="goToGenerateBtn" class="copy-all-btn" data-i18n="goToGenerate">用这个分析结果去生成文案</button>
       </section>
     </main>
