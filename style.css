@@ -2262,3 +2262,228 @@ body.mono-site::before,
     width: 100%;
   }
 }
+
+/* ===== Homepage v2: first 3 sections ===== */
+.homepage-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.homepage-hero {
+  padding: 40px 36px !important;
+}
+
+.homepage-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 420px);
+  gap: 28px;
+  align-items: center;
+}
+
+.homepage-hero-copy {
+  text-align: left;
+}
+
+.homepage-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1.5px solid var(--mono-line);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.homepage-hero-actions {
+  justify-content: flex-start !important;
+  margin-top: 22px !important;
+}
+
+.homepage-preview-card {
+  border: 1.5px solid var(--mono-line);
+  border-radius: 22px;
+  background: #fff;
+  padding: 0;
+  overflow: hidden;
+}
+
+.preview-card-header {
+  padding: 14px 18px;
+  border-bottom: 1.5px solid var(--mono-line);
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.preview-card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-card-body p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  line-height: 1.65;
+}
+
+.preview-card-body strong {
+  font-size: 0.9rem;
+}
+
+.homepage-problem-section,
+.homepage-feature-section {
+  padding: 28px !important;
+}
+
+.section-header {
+  margin-bottom: 18px;
+}
+
+.section-header h2 {
+  margin-bottom: 8px;
+}
+
+.homepage-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.homepage-problem-card,
+.homepage-feature-card {
+  border: 1.5px solid var(--mono-line);
+  border-radius: 20px;
+  padding: 22px;
+  background: #fff;
+}
+
+.homepage-problem-card h3,
+.homepage-feature-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.homepage-problem-card p,
+.homepage-feature-card li,
+.homepage-section-summary {
+  color: var(--mono-text-soft);
+  line-height: 1.8;
+}
+
+.homepage-section-summary {
+  margin-top: 16px;
+  max-width: 880px;
+}
+
+.homepage-feature-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.homepage-feature-card ul {
+  margin: 0 0 18px 18px;
+  padding: 0;
+}
+
+.homepage-flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  padding: 18px 10px;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.search-action.compact {
+  min-width: 0;
+  width: auto;
+  padding: 12px 18px;
+}
+
+/* keep existing button, only refine style and position */
+.mono-site .mono-topbar {
+  position: sticky;
+  top: 14px;
+  z-index: 20;
+  background: transparent;
+  backdrop-filter: none;
+  margin-bottom: 28px;
+}
+
+.mono-site .lang-switcher {
+  position: relative;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+.mono-site .lang-btn {
+  min-width: 64px;
+  font-weight: 800;
+}
+
+.mono-site .lang-btn.active {
+  background: var(--mono-line) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 960px) {
+  .homepage-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .homepage-two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .homepage-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .homepage-flow-arrow {
+    min-width: 0;
+    justify-content: flex-start;
+    padding: 0 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homepage-hero,
+  .homepage-problem-section,
+  .homepage-feature-section {
+    padding: 20px 16px !important;
+  }
+
+  .homepage-hero-copy {
+    text-align: left;
+  }
+
+  .homepage-kicker {
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .homepage-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .homepage-hero-actions .search-action {
+    width: 100%;
+  }
+
+  .preview-card-body p {
+    gap: 2px;
+  }
+}
