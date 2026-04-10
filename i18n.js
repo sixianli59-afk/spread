@@ -1,6 +1,8 @@
 const translations = {
   zh: {
     brand: "$pread",
+    brandWord: "pread",
+    brandWord: "pread",
     navHome: "首页",
     navGenerate: "商品文案生成",
     navAnalyze: "市场适配分析",
@@ -9,6 +11,11 @@ const translations = {
     landingTitle: "让商品文案生成与市场判断\n更轻松、更直观、更贴近目标国家",
     landingDesc:
       "$pread 帮跨境卖家更快完成商品文案生成、市场适配分析与进入建议判断，用更轻松的方式做更清楚的决策。",
+    searchPrompt: "你可以用它做什么",
+    searchExample1: "为美国市场生成一版更像独立站的商品文案",
+    searchExample2: "先判断这个产品适不适合澳大利亚，再决定要不要卖",
+    searchExample3: "用市场分析结果继续生成更贴近目标国家的卖点",
+    searchHint: "像搜索一样开始，但走完的是一整条跨境卖家的工作流。",
 
     landingWhatTitle: "你可以用它做什么",
     featureGenerateTitle: "商品文案生成",
@@ -102,6 +109,7 @@ const translations = {
 
   en: {
     brand: "$pread",
+    brandWord: "pread",
     navHome: "Home",
     navGenerate: "Copy Generator",
     navAnalyze: "Market Analysis",
@@ -110,6 +118,11 @@ const translations = {
     landingTitle: "Make product copy and market-fit decisions\nfaster, clearer, and more localized",
     landingDesc:
       "$pread helps cross-border sellers generate product copy, evaluate market fit, and make entry decisions with less guesswork and more clarity.",
+    searchPrompt: "What can you do with it",
+    searchExample1: "Generate a more independent-store style product copy for the US market",
+    searchExample2: "Judge whether a product fits Australia before deciding to sell it",
+    searchExample3: "Turn market analysis into more localized selling points",
+    searchHint: "Start like a search engine, finish with a real cross-border workflow.",
 
     landingWhatTitle: "What you can do with it",
     featureGenerateTitle: "Product Copy Generator",
