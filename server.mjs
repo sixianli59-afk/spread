@@ -44,7 +44,7 @@ async function createJsonCompletion(messages) {
   const completion = await client.chat.completions.create({
     model: "deepseek-chat",
     response_format: { type: "json_object" },
-    max_tokens: 800,
+    max_tokens: 1000,
     messages,
   });
 
@@ -99,36 +99,66 @@ function cleanupRateLimitStore() {
   }
 }
 
+function languageName(lang) {
+  return lang === "en" ? "English" : "Chinese";
+}
+
 function buildMarketContextPrompt(marketContext) {
   if (!marketContext || typeof marketContext !== "object") {
     return "";
   }
 
-  const likes = Array.isArray(marketContext.likes) ? marketContext.likes.join("; ") : "";
-  const dislikes = Array.isArray(marketContext.dislikes) ? marketContext.dislikes.join("; ") : "";
-  const score = marketContext.score || "";
-  const advice = marketContext.advice || "";
+  const verdict = marketContext.verdict || "";
+  const confidence = marketContext.confidence || "";
+  const reasons = Array.isArray(marketContext.reasons) ? marketContext.reasons.join("; ") : "";
+  const targetCustomers = Array.isArray(marketContext.targetCustomers)
+    ? marketContext.targetCustomers.join("; ")
+    : "";
+  const keyAngles = Array.isArray(marketContext.keyAngles) ? marketContext.keyAngles.join("; ") : "";
+  const risks = Array.isArray(marketContext.risks) ? marketContext.risks.join("; ") : "";
+  const nextSteps = Array.isArray(marketContext.nextSteps) ? marketContext.nextSteps.join("; ") : "";
   const copyDirection = marketContext.copyDirection || "";
 
-  if (!likes && !dislikes && !score && !advice && !copyDirection) {
+  const legacyLikes = Array.isArray(marketContext.likes) ? marketContext.likes.join("; ") : "";
+  const legacyDislikes = Array.isArray(marketContext.dislikes) ? marketContext.dislikes.join("; ") : "";
+  const legacyScore = marketContext.score || "";
+  const legacyAdvice = marketContext.advice || "";
+
+  if (
+    !verdict &&
+    !confidence &&
+    !reasons &&
+    !targetCustomers &&
+    !keyAngles &&
+    !risks &&
+    !nextSteps &&
+    !copyDirection &&
+    !legacyLikes &&
+    !legacyDislikes &&
+    !legacyScore &&
+    !legacyAdvice
+  ) {
     return "";
   }
 
   return `
 Additional market analysis context:
-- Market fit score: ${score}
-- What this market tends to like: ${likes}
-- What this market tends to dislike: ${dislikes}
-- Entry advice: ${advice}
+- Market verdict: ${verdict}
+- Confidence: ${confidence}
+- Reasons: ${reasons}
+- Target customers: ${targetCustomers}
+- Key angles to emphasize: ${keyAngles}
+- Risks: ${risks}
+- Next steps: ${nextSteps}
 - Recommended copy direction: ${copyDirection}
+- Legacy likes: ${legacyLikes}
+- Legacy dislikes: ${legacyDislikes}
+- Legacy score: ${legacyScore}
+- Legacy advice: ${legacyAdvice}
 
 Use this context to make the copy more aligned with the target market.
 Do not mention the analysis directly in the output.
   `.trim();
-}
-
-function languageName(lang) {
-  return lang === "en" ? "English" : "Chinese";
 }
 
 const server = http.createServer(async (req, res) => {
@@ -240,7 +270,7 @@ Rules:
         {
           role: "system",
           content: `
-You are a market-fit analyst for cross-border e-commerce sellers.
+You are a market-entry strategist for cross-border e-commerce sellers.
 Return JSON only.
 The response must be valid json.
           `.trim(),
@@ -261,21 +291,34 @@ ${priceRange}
 
 Return json in exactly this shape:
 {
-  "likes": ["string", "string", "string"],
-  "dislikes": ["string", "string", "string"],
-  "score": "string",
-  "advice": "string",
+  "verdict": "string",
+  "confidence": "string",
+  "reasons": ["string", "string", "string"],
+  "targetCustomers": ["string", "string"],
+  "keyAngles": ["string", "string", "string"],
+  "risks": ["string", "string", "string"],
+  "nextSteps": ["string", "string", "string"],
   "copyDirection": "string"
 }
 
 Rules:
-- likes must be 3 short bullet points in ${languageName(uiLanguage)} about what this market tends to value
-- dislikes must be 3 short bullet points in ${languageName(uiLanguage)} about what this market may reject
-- score should look like "78 / 100"
-- advice should be one short paragraph in ${languageName(uiLanguage)}
-- copyDirection should be one short paragraph in ${languageName(uiLanguage)}
-- All fields except score must be in ${languageName(uiLanguage)}
-- Keep the analysis practical for an independent e-commerce seller
+- All fields must be in ${languageName(uiLanguage)}
+- verdict should be one of these meanings:
+  - good fit / suitable to enter
+  - worth small-scale testing
+  - not recommended for now
+- confidence should match one of these meanings:
+  - high
+  - medium
+  - low
+- reasons must be 3 concrete reasons behind the judgment
+- targetCustomers must be 2 clear customer groups
+- keyAngles must be 3 practical selling angles to emphasize
+- risks must be 3 realistic obstacles that may reduce conversion
+- nextSteps must be 3 practical next actions for the seller
+- copyDirection must be one short paragraph
+- Keep the result practical, concrete, and decision-oriented
+- Avoid generic filler language
 - Do not include markdown
 - Do not include any text outside json
           `.trim(),
@@ -304,13 +347,25 @@ Rules:
         return sendJson(res, 200, analysis);
       }
 
-      const likes = Array.isArray(analysis.likes) ? analysis.likes : [];
-      const dislikes = Array.isArray(analysis.dislikes) ? analysis.dislikes : [];
-      const score = analysis.score || "";
-      const advice = analysis.advice || "";
+      const verdict = analysis.verdict || "";
+      const confidence = analysis.confidence || "";
+      const reasons = Array.isArray(analysis.reasons) ? analysis.reasons : [];
+      const targetCustomers = Array.isArray(analysis.targetCustomers) ? analysis.targetCustomers : [];
+      const keyAngles = Array.isArray(analysis.keyAngles) ? analysis.keyAngles : [];
+      const risks = Array.isArray(analysis.risks) ? analysis.risks : [];
+      const nextSteps = Array.isArray(analysis.nextSteps) ? analysis.nextSteps : [];
       const copyDirection = analysis.copyDirection || "";
 
-      if (!likes.length && !dislikes.length && !score && !advice && !copyDirection) {
+      if (
+        !verdict &&
+        !confidence &&
+        !reasons.length &&
+        !targetCustomers.length &&
+        !keyAngles.length &&
+        !risks.length &&
+        !nextSteps.length &&
+        !copyDirection
+      ) {
         return sendJson(res, 400, { error: "没有可翻译的分析内容" });
       }
 
@@ -334,36 +389,35 @@ Important rules:
 - Do not remove information
 - Keep the same meaning
 - Keep the same JSON structure
-- Keep the score unchanged exactly as it is
-- likes and dislikes must remain arrays with 3 items when possible
+- verdict and confidence must keep the same business meaning
 - Return JSON only
 
 Original analysis:
 {
-  "likes": ${JSON.stringify(likes)},
-  "dislikes": ${JSON.stringify(dislikes)},
-  "score": ${JSON.stringify(score)},
-  "advice": ${JSON.stringify(advice)},
+  "verdict": ${JSON.stringify(verdict)},
+  "confidence": ${JSON.stringify(confidence)},
+  "reasons": ${JSON.stringify(reasons)},
+  "targetCustomers": ${JSON.stringify(targetCustomers)},
+  "keyAngles": ${JSON.stringify(keyAngles)},
+  "risks": ${JSON.stringify(risks)},
+  "nextSteps": ${JSON.stringify(nextSteps)},
   "copyDirection": ${JSON.stringify(copyDirection)}
 }
 
 Return json in exactly this shape:
 {
-  "likes": ["string", "string", "string"],
-  "dislikes": ["string", "string", "string"],
-  "score": "string",
-  "advice": "string",
+  "verdict": "string",
+  "confidence": "string",
+  "reasons": ["string", "string", "string"],
+  "targetCustomers": ["string", "string"],
+  "keyAngles": ["string", "string", "string"],
+  "risks": ["string", "string", "string"],
+  "nextSteps": ["string", "string", "string"],
   "copyDirection": "string"
 }
           `.trim(),
         },
       ]);
-
-      if (!parsed.score) {
-        parsed.score = score;
-      } else {
-        parsed.score = score;
-      }
 
       return sendJson(res, 200, parsed);
     } catch (error) {
