@@ -18,6 +18,8 @@ const ANALYZE_HISTORY_KEY = "spread_analyze_history";
 const MARKET_CONTEXT_KEY = "spread_market_context";
 const API_BASE = "https://spread-api-5wyc.onrender.com";
 
+let currentAnalysisRecord = null;
+
 function showToast(message) {
   toast.textContent = message;
   toast.classList.remove("hidden");
@@ -37,6 +39,72 @@ function saveAnalyzeHistory(items) {
   localStorage.setItem(ANALYZE_HISTORY_KEY, JSON.stringify(items));
 }
 
+function createAnalysisRecord({
+  productName,
+  category,
+  priceRange,
+  country,
+  likes,
+  dislikes,
+  score,
+  advice,
+  copyDirection,
+  language,
+}) {
+  return {
+    id: `analysis_${Date.now()}`,
+    productName,
+    category,
+    priceRange,
+    country,
+    createdAt: new Date().toISOString(),
+    time: new Date().toLocaleString(),
+    versions: {
+      [language]: {
+        likes,
+        dislikes,
+        score,
+        advice,
+        copyDirection,
+      },
+    },
+  };
+}
+
+function getVersionFromRecord(record, lang = getLanguage()) {
+  if (!record || !record.versions) return null;
+  return (
+    record.versions[lang] ||
+    record.versions.zh ||
+    record.versions.en ||
+    Object.values(record.versions)[0] ||
+    null
+  );
+}
+
+function renderResultFromRecord(record) {
+  const version = getVersionFromRecord(record);
+  if (!version) return;
+
+  likesResult.innerHTML = "";
+  (version.likes || []).forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    likesResult.appendChild(li);
+  });
+
+  dislikesResult.innerHTML = "";
+  (version.dislikes || []).forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    dislikesResult.appendChild(li);
+  });
+
+  scoreResult.textContent = version.score || "";
+  adviceResult.textContent = version.advice || "";
+  copyDirectionResult.textContent = version.copyDirection || "";
+}
+
 function renderAnalyzeHistory() {
   const items = getAnalyzeHistory();
 
@@ -53,20 +121,23 @@ function renderAnalyzeHistory() {
 
   analyzeHistoryList.innerHTML = items
     .map((item) => {
+      const version = getVersionFromRecord(item);
+      if (!version) return "";
+
       return `
         <div class="analyze-history-item">
           <h3>${item.productName}</h3>
           <p class="analyze-history-meta">${item.country} · ${item.category} · ${item.priceRange} · ${item.time}</p>
-          <p><strong>${scoreLabel}</strong>${item.score}</p>
-          <p><strong>${adviceLabel}</strong>${item.advice}</p>
-          <p><strong>${copyDirectionLabel}</strong>${item.copyDirection}</p>
+          <p><strong>${scoreLabel}</strong>${version.score || ""}</p>
+          <p><strong>${adviceLabel}</strong>${version.advice || ""}</p>
+          <p><strong>${copyDirectionLabel}</strong>${version.copyDirection || ""}</p>
           <p><strong>${likesLabel}</strong></p>
           <ul>
-            ${item.likes.map((like) => `<li>${like}</li>`).join("")}
+            ${(version.likes || []).map((like) => `<li>${like}</li>`).join("")}
           </ul>
           <p><strong>${dislikesLabel}</strong></p>
           <ul>
-            ${item.dislikes.map((dislike) => `<li>${dislike}</li>`).join("")}
+            ${(version.dislikes || []).map((dislike) => `<li>${dislike}</li>`).join("")}
           </ul>
         </div>
       `;
@@ -106,22 +177,23 @@ function copyText(text) {
 }
 
 function saveMarketContext() {
-  const productName = document.getElementById("productName").value.trim();
-  const category = document.getElementById("category").value.trim();
-  const priceRange = document.getElementById("priceRange").value;
-  const country = document.getElementById("country").value;
+  if (!currentAnalysisRecord) return;
+
+  const version = getVersionFromRecord(currentAnalysisRecord);
+  if (!version) return;
 
   const context = {
-    productName,
-    category,
-    priceRange,
-    country,
-    likes: getListArray(likesResult),
-    dislikes: getListArray(dislikesResult),
-    score: scoreResult.textContent.trim(),
-    advice: adviceResult.textContent.trim(),
-    copyDirection: copyDirectionResult.textContent.trim(),
+    id: currentAnalysisRecord.id,
+    productName: currentAnalysisRecord.productName,
+    category: currentAnalysisRecord.category,
+    priceRange: currentAnalysisRecord.priceRange,
+    country: currentAnalysisRecord.country,
     language: getLanguage(),
+    likes: version.likes || [],
+    dislikes: version.dislikes || [],
+    score: version.score || "",
+    advice: version.advice || "",
+    copyDirection: version.copyDirection || "",
     savedAt: new Date().toISOString(),
   };
 
@@ -137,9 +209,10 @@ function setLoadingAnalyzeText() {
 }
 
 function setDefaultAnalyzeErrorText() {
-  errorText.textContent = getLanguage() === "en"
-    ? "Analysis failed. Please try again."
-    : "分析失败，请重新尝试";
+  errorText.textContent =
+    getLanguage() === "en"
+      ? "Analysis failed. Please try again."
+      : "分析失败，请重新尝试";
 }
 
 window.refreshDynamicLanguage = function () {
@@ -149,6 +222,10 @@ window.refreshDynamicLanguage = function () {
 
   if (!analyzeBtn.disabled) {
     setIdleAnalyzeButtonText();
+  }
+
+  if (currentAnalysisRecord) {
+    renderResultFromRecord(currentAnalysisRecord);
   }
 
   if (toast.textContent === "复制成功" || toast.textContent === "Copied") {
@@ -167,11 +244,12 @@ analyzeBtn.addEventListener("click", async () => {
   const category = document.getElementById("category").value.trim();
   const priceRange = document.getElementById("priceRange").value;
   const country = document.getElementById("country").value;
+  const language = getLanguage();
 
   if (!productName || !category || !priceRange || !country) {
     loadingText.classList.add("hidden");
     errorText.textContent =
-      getLanguage() === "en"
+      language === "en"
         ? "Please complete all fields first"
         : "请先把所有内容填写完整";
     errorText.classList.remove("hidden");
@@ -191,7 +269,7 @@ analyzeBtn.addEventListener("click", async () => {
         category,
         priceRange,
         country,
-        uiLanguage: getLanguage(),
+        uiLanguage: language,
       }),
     });
 
@@ -200,31 +278,13 @@ analyzeBtn.addEventListener("click", async () => {
     if (!res.ok) {
       throw new Error(
         data.error ||
-          (getLanguage() === "en"
+          (language === "en"
             ? "Analysis failed. Please try again."
             : "分析失败，请重新尝试")
       );
     }
 
-    likesResult.innerHTML = "";
-    (data.likes || []).forEach((item) => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      likesResult.appendChild(li);
-    });
-
-    dislikesResult.innerHTML = "";
-    (data.dislikes || []).forEach((item) => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      dislikesResult.appendChild(li);
-    });
-
-    scoreResult.textContent = data.score || "";
-    adviceResult.textContent = data.advice || "";
-    copyDirectionResult.textContent = data.copyDirection || "";
-
-    addAnalyzeHistory({
+    currentAnalysisRecord = createAnalysisRecord({
       productName,
       category,
       priceRange,
@@ -234,12 +294,15 @@ analyzeBtn.addEventListener("click", async () => {
       score: data.score || "",
       advice: data.advice || "",
       copyDirection: data.copyDirection || "",
-      time: new Date().toLocaleString(),
+      language,
     });
+
+    renderResultFromRecord(currentAnalysisRecord);
+    addAnalyzeHistory(currentAnalysisRecord);
   } catch (error) {
     errorText.textContent =
       error.message ||
-      (getLanguage() === "en"
+      (language === "en"
         ? "Analysis failed. Please try again."
         : "分析失败，请重新尝试");
     errorText.classList.remove("hidden");
