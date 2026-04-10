@@ -2680,3 +2680,87 @@ body.mono-site::before,
     padding: 16px;
   }
 }
+
+/* ===== Homepage polish pass ===== */
+.search-home {
+  padding-top: 88px;
+}
+
+.homepage-topbar {
+  position: fixed !important;
+  top: 18px;
+  right: 28px;
+  z-index: 60;
+  width: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.homepage-kicker {
+  color: #111 !important;
+  min-height: 42px;
+}
+
+.section-header h2,
+.homepage-problem-card h3,
+.homepage-feature-card h3,
+.preview-card-header {
+  color: #111 !important;
+  opacity: 1 !important;
+}
+
+.search-subline,
+.homepage-problem-card p,
+.homepage-feature-card li,
+.homepage-section-summary,
+.preview-card-body p,
+.homepage-flow-arrow {
+  color: #222 !important;
+  opacity: 1 !important;
+}
+
+.homepage-problem-section .section-header,
+.homepage-feature-section .section-header {
+  margin-bottom: 14px !important;
+}
+
+.homepage-problem-section .section-header h2,
+.homepage-feature-section .section-header h2 {
+  max-width: 760px;
+}
+
+.homepage-problem-card,
+.homepage-feature-card {
+  min-height: 0 !important;
+}
+
+.homepage-feature-grid {
+  align-items: start !important;
+}
+
+.preview-card-body {
+  gap: 8px !important;
+}
+
+.preview-card-body p {
+  font-size: 0.96rem !important;
+  line-height: 1.55 !important;
+}
+
+.preview-card-body strong {
+  color: #111 !important;
+}
+
+@media (max-width: 960px) {
+  .search-home {
+    padding-top: 76px;
+  }
+
+  .homepage-topbar {
+    top: 14px;
+    right: 16px;
+  }
+}
