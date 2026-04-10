@@ -127,6 +127,10 @@ Do not mention the analysis directly in the output.
   `.trim();
 }
 
+function languageName(lang) {
+  return lang === "en" ? "English" : "Chinese";
+}
+
 const server = http.createServer(async (req, res) => {
   cleanupRateLimitStore();
 
@@ -134,7 +138,10 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { ok: true });
   }
 
-  if (req.method === "POST" && (req.url === "/generate" || req.url === "/analyze")) {
+  if (
+    req.method === "POST" &&
+    (req.url === "/generate" || req.url === "/analyze" || req.url === "/translate-analysis")
+  ) {
     const ip = getClientIp(req);
 
     if (isRateLimited(ip)) {
@@ -154,7 +161,6 @@ const server = http.createServer(async (req, res) => {
       const feature2 = (data.feature2 || "").trim();
       const feature3 = (data.feature3 || "").trim();
       const country = (data.country || "").trim();
-      const uiLanguage = data.uiLanguage === "en" ? "en" : "zh";
       const marketContext = data.marketContext || null;
 
       if (!productName || !feature1 || !feature2 || !feature3 || !country) {
@@ -263,12 +269,12 @@ Return json in exactly this shape:
 }
 
 Rules:
-- likes must be 3 short bullet points in ${uiLanguage === "en" ? "English" : "Chinese"} about what this market tends to value
-- dislikes must be 3 short bullet points in ${uiLanguage === "en" ? "English" : "Chinese"} about what this market may reject
+- likes must be 3 short bullet points in ${languageName(uiLanguage)} about what this market tends to value
+- dislikes must be 3 short bullet points in ${languageName(uiLanguage)} about what this market may reject
 - score should look like "78 / 100"
-- advice should be one short paragraph in ${uiLanguage === "en" ? "English" : "Chinese"}
-- copyDirection should be one short paragraph in ${uiLanguage === "en" ? "English" : "Chinese"}
-- All fields except score must be in ${uiLanguage === "en" ? "English" : "Chinese"}
+- advice should be one short paragraph in ${languageName(uiLanguage)}
+- copyDirection should be one short paragraph in ${languageName(uiLanguage)}
+- All fields except score must be in ${languageName(uiLanguage)}
 - Keep the analysis practical for an independent e-commerce seller
 - Do not include markdown
 - Do not include any text outside json
@@ -281,6 +287,89 @@ Rules:
       console.error("Analyze error:", error);
       return sendJson(res, 500, {
         error: "分析失败，请检查 DeepSeek API key、余额或返回格式",
+      });
+    }
+  }
+
+  if (req.method === "POST" && req.url === "/translate-analysis") {
+    try {
+      const rawBody = await readBody(req);
+      const data = JSON.parse(rawBody || "{}");
+
+      const analysis = data.analysis || {};
+      const fromLanguage = data.fromLanguage === "en" ? "en" : "zh";
+      const toLanguage = data.toLanguage === "en" ? "en" : "zh";
+
+      if (fromLanguage === toLanguage) {
+        return sendJson(res, 200, analysis);
+      }
+
+      const likes = Array.isArray(analysis.likes) ? analysis.likes : [];
+      const dislikes = Array.isArray(analysis.dislikes) ? analysis.dislikes : [];
+      const score = analysis.score || "";
+      const advice = analysis.advice || "";
+      const copyDirection = analysis.copyDirection || "";
+
+      if (!likes.length && !dislikes.length && !score && !advice && !copyDirection) {
+        return sendJson(res, 400, { error: "没有可翻译的分析内容" });
+      }
+
+      const parsed = await createJsonCompletion([
+        {
+          role: "system",
+          content: `
+You are a translation assistant for structured market analysis results.
+Return JSON only.
+The response must be valid json.
+          `.trim(),
+        },
+        {
+          role: "user",
+          content: `
+Translate the following market analysis from ${languageName(fromLanguage)} to ${languageName(toLanguage)}.
+
+Important rules:
+- Do not re-analyze
+- Do not add new opinions
+- Do not remove information
+- Keep the same meaning
+- Keep the same JSON structure
+- Keep the score unchanged exactly as it is
+- likes and dislikes must remain arrays with 3 items when possible
+- Return JSON only
+
+Original analysis:
+{
+  "likes": ${JSON.stringify(likes)},
+  "dislikes": ${JSON.stringify(dislikes)},
+  "score": ${JSON.stringify(score)},
+  "advice": ${JSON.stringify(advice)},
+  "copyDirection": ${JSON.stringify(copyDirection)}
+}
+
+Return json in exactly this shape:
+{
+  "likes": ["string", "string", "string"],
+  "dislikes": ["string", "string", "string"],
+  "score": "string",
+  "advice": "string",
+  "copyDirection": "string"
+}
+          `.trim(),
+        },
+      ]);
+
+      if (!parsed.score) {
+        parsed.score = score;
+      } else {
+        parsed.score = score;
+      }
+
+      return sendJson(res, 200, parsed);
+    } catch (error) {
+      console.error("Translate analysis error:", error);
+      return sendJson(res, 500, {
+        error: "翻译失败，请稍后重试",
       });
     }
   }
