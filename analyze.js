@@ -430,8 +430,6 @@ document.querySelectorAll(".copy-btn").forEach((btn) => {
     let textToCopy = "";
 
     if (target.tagclear
-clear
-clear
 cd ~/Desktop/spread
 
 cat > analyze.js <<'EOF'
