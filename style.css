@@ -1664,3 +1664,397 @@ button:hover,
     bottom: 2px;
   }
 }
+
+/* ===== Monochrome line-style redesign ===== */
+:root {
+  --mono-bg: #f7f6f2;
+  --mono-surface: #ffffff;
+  --mono-line: #111111;
+  --mono-line-soft: #cfcfc8;
+  --mono-text: #111111;
+  --mono-text-soft: #5a5a54;
+}
+
+body.mono-site,
+.mono-site {
+  background: var(--mono-bg) !important;
+  color: var(--mono-text) !important;
+}
+
+body.mono-site::before,
+.home-search-page::before {
+  display: none !important;
+}
+
+.mono-site .container {
+  position: relative;
+  z-index: 1;
+}
+
+.mono-site .landing-hero,
+.mono-site .hero,
+.mono-site .landing-section,
+.mono-site .history-section,
+.mono-site .card,
+.mono-site .search-hero-shell {
+  background: var(--mono-surface) !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.mono-site .hero,
+.mono-site .landing-section,
+.mono-site .history-section,
+.mono-site .card {
+  border-radius: 22px !important;
+}
+
+.mono-site .brand-logo,
+.mono-site .brand-logo.center {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--mono-line) !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  transform: none !important;
+  text-shadow: none !important;
+}
+
+.mono-site .logo-word,
+.mono-site .logo-word.mini {
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.06em !important;
+  color: var(--mono-line) !important;
+}
+
+.mono-site .logo-word {
+  font-size: clamp(4rem, 10vw, 7rem) !important;
+}
+
+.mono-site .logo-word.mini {
+  font-size: 1.45rem !important;
+}
+
+.mono-site .logo-dollar {
+  position: relative;
+  color: var(--mono-line) !important;
+  font-size: clamp(4.1rem, 10vw, 7.2rem) !important;
+  font-weight: 700 !important;
+  margin-right: -10px !important;
+  transform: none !important;
+}
+
+.mono-site .logo-dollar.mini {
+  font-size: 1.55rem !important;
+  margin-right: -3px !important;
+}
+
+.mono-site .logo-dollar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 3%;
+  width: 4px;
+  height: 94%;
+  background: var(--mono-line);
+  border-radius: 999px;
+  transform: translateX(-50%) rotate(10deg);
+  z-index: -1;
+}
+
+.mono-site .logo-dollar::before {
+  content: "";
+  position: absolute;
+  left: 63%;
+  top: 4%;
+  width: 12px;
+  height: 16px;
+  border: 2px solid var(--mono-line);
+  border-left: none;
+  border-radius: 999px;
+  transform: rotate(14deg);
+  z-index: -1;
+  background: transparent;
+}
+
+.mono-site .landing-main h1,
+.mono-site .search-headline,
+.mono-site .subtitle,
+.mono-site .landing-section h2,
+.mono-site .history-header h2,
+.mono-site .result-section h2,
+.mono-site .form-section h2,
+.mono-site .feature-card h3,
+.mono-site .benefit-item strong,
+.mono-site .result-box h3 {
+  color: var(--mono-line) !important;
+  letter-spacing: -0.04em !important;
+}
+
+.mono-site .landing-desc,
+.mono-site .desc,
+.mono-site .search-subline,
+.mono-site .search-hint,
+.mono-site .feature-card p,
+.mono-site .benefit-item p,
+.mono-site .history-meta,
+.mono-site .analyze-history-meta {
+  color: var(--mono-text-soft) !important;
+}
+
+.mono-site .lang-switcher {
+  background: #fff !important;
+  border: 1.5px solid var(--mono-line) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  padding: 4px !important;
+}
+
+.mono-site .lang-btn {
+  background: transparent !important;
+  color: var(--mono-line) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.mono-site .lang-btn.active {
+  background: var(--mono-line) !important;
+  color: #fff !important;
+}
+
+.mono-site .page-nav {
+  gap: 10px !important;
+}
+
+.mono-site .nav-link,
+.mono-site .search-action,
+.mono-site .quick-note,
+.mono-site .search-badge,
+.mono-site .search-command-input {
+  background: #fff !important;
+  color: var(--mono-line) !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: none !important;
+}
+
+.mono-site .nav-link.active,
+.mono-site .search-action.primary,
+.mono-site button,
+.mono-site .copy-all-btn {
+  background: var(--mono-line) !important;
+  color: #fff !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: none !important;
+}
+
+.mono-site .copy-btn,
+.mono-site .clear-history-btn {
+  background: #fff !important;
+  color: var(--mono-line) !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: none !important;
+}
+
+.mono-site button:hover,
+.mono-site .copy-btn:hover,
+.mono-site .copy-all-btn:hover,
+.mono-site .clear-history-btn:hover,
+.mono-site .nav-link:hover,
+.mono-site .search-action:hover {
+  transform: translateY(-1px);
+  opacity: 1 !important;
+}
+
+.mono-site input,
+.mono-site select,
+.mono-site textarea {
+  background: #fff !important;
+  color: var(--mono-line) !important;
+  border: 1.5px solid var(--mono-line) !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+
+.mono-site input::placeholder,
+.mono-site textarea::placeholder {
+  color: #8a8a83 !important;
+}
+
+.mono-site input:focus,
+.mono-site select:focus,
+.mono-site textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: var(--mono-line) !important;
+}
+
+.mono-site .feature-card,
+.mono-site .benefit-item,
+.mono-site .result-box,
+.mono-site .history-item,
+.mono-site .analyze-history-item {
+  background: #fff !important;
+  border: 1.5px solid var(--mono-line) !important;
+  box-shadow: none !important;
+  border-radius: 18px !important;
+}
+
+.mono-site .search-home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 28px;
+  padding-bottom: 40px;
+}
+
+.mono-site .mono-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 42px;
+  gap: 16px;
+}
+
+.mono-site .mono-brand {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mono-site .mono-search-shell {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 54px 34px 34px !important;
+  border-radius: 28px !important;
+}
+
+.mono-site .mono-logo-lockup {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.mono-site .search-headline {
+  font-size: clamp(2.2rem, 5vw, 4.4rem) !important;
+  line-height: 1.05 !important;
+  margin-bottom: 16px !important;
+}
+
+.mono-site .search-subline {
+  max-width: 760px;
+  margin: 0 auto 26px;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.mono-site .mono-command-box {
+  max-width: 760px;
+  margin: 0 auto 22px;
+}
+
+.mono-site .mono-command-input {
+  min-height: 72px;
+  border-radius: 999px !important;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-start;
+  padding: 0 22px;
+}
+
+.mono-site .search-command-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--mono-line);
+  flex-shrink: 0;
+}
+
+.mono-site .search-command-text {
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: left;
+  color: var(--mono-line) !important;
+}
+
+.mono-site .search-hint {
+  margin: 16px auto 0;
+  max-width: 640px;
+  font-size: 0.96rem;
+}
+
+.mono-site .search-command-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.mono-site .search-action {
+  min-width: 190px;
+  padding: 14px 20px;
+  border-radius: 999px !important;
+  font-weight: 900;
+}
+
+.mono-site .search-quick-notes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.mono-site .quick-note {
+  padding: 10px 14px;
+  border-radius: 999px !important;
+  font-weight: 800;
+}
+
+.mono-site .toast {
+  background: var(--mono-line) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .mono-site .mono-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 26px;
+  }
+
+  .mono-site .lang-switcher {
+    align-self: flex-end;
+  }
+
+  .mono-site .mono-search-shell {
+    padding: 34px 18px 24px !important;
+    border-radius: 22px !important;
+  }
+
+  .mono-site .search-command-actions {
+    flex-direction: column;
+  }
+
+  .mono-site .search-action {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .mono-site .search-quick-notes {
+    flex-direction: column;
+  }
+
+  .mono-site .quick-note {
+    width: 100%;
+  }
+}
